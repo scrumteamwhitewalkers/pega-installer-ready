@@ -1,0 +1,36 @@
+apply plugin: 'com.pega.images.docker'
+
+artifactoryRest {
+    url { gradle.checkVersionArtifactoryURL }
+    credentials { "${gradle.checkVersionArtifactoryUser}:${gradle.checkVersionArtifactoryPassword}" }
+
+    // Details on the below props, and what other options are available, can be found here:
+    //
+    //    https://github.com/jclouds/jclouds/blob/master/core/src/main/java/org/jclouds/Constants.java
+    //
+    overrides = ['jclouds.so-timeout'         : '60000000',
+                 'jclouds.connection-timeout' : '60000000',
+                 'jclouds.retries-delay-start': '120000000',
+                 'jclouds.request-timeout'    : '120000000',
+                 'jclouds.idempotent-methods' : 'GET,HEAD,OPTIONS,PUT,POST',
+                 'jclouds.max-retries'        : '5']
+}
+
+dependencies {
+   docker(group: 'com.pega.prpc.assemblies', name: 'PRPC', version: buildVersion, ext: 'zip')
+}
+
+getDependencies {
+   rename 'PRPC.*zip', 'PRPC.zip'
+}
+
+task unzipDistro(type: Copy) {
+  def tree = zipTree("$buildDir/archives/PRPC.zip")
+   from(tree.matching { 
+          include 'scripts/**' 
+          include 'archives/**'
+          include 'rules/**' })
+   into("$buildDir/archives/")
+}
+
+project.tasks.getByName('buildImage').dependsOn('unzipDistro')
