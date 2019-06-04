@@ -48,7 +48,7 @@ fi
   no_of_zip_files=$(ls -lr ${kit_root}/*.zip | wc -l)
   if [ "$no_of_zip_files" == 1 ]
   then
-     unzip ${kit_root}/*.zip -d ${kit_root}
+     unzip -o ${kit_root}/*.zip -d ${kit_root}
   else
      echo "/opt/pega/kit folder should contain only kit zip"
      exit 1

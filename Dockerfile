@@ -20,6 +20,21 @@ RUN mkdir -p /opt/pega/kit && \
     chgrp -R 0 /opt/pega/kit && \
     chmod -R g+rw /opt/pega/kit
 
+# Create common directory for mounting archives folder from distribution kit
+RUN mkdir -p /opt/pega/kit/archives && \
+    chgrp -R 0 /opt/pega/kit/archives && \
+    chmod -R g+rw /opt/pega/kit/archives
+      
+# Create common directory for mounting scripts folder from distribution kit
+RUN mkdir -p /opt/pega/kit/scripts && \
+    chgrp -R 0 /opt/pega/kit/scripts && \
+    chmod -R g+rw /opt/pega/kit/scripts
+      
+# Create common directory for mounting rules folder from distribution kit
+RUN mkdir -p /opt/pega/kit/rules && \
+    chgrp -R 0 /opt/pega/kit/rules && \
+    chmod -R g+rw /opt/pega/kit/rules
+
 # Create directory for mounting configuration files
 RUN  mkdir -p /opt/pega/config  && \
      chgrp -R 0 /opt/pega/config && \
