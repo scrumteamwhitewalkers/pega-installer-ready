@@ -30,10 +30,10 @@ source /scripts/installer_utils.sh
 
 
 unzipKit(){
-
+deleteFileAfterUnzip=false
 #download if URI is provided
 if [ "$KIT_URL" != "" ]; then
-  
+  deleteFileAfterUnzip=true
   buildname=$(basename $KIT_URL)
   if curl --output /dev/null --silent --head --fail $KIT_URL
   then
@@ -48,10 +48,16 @@ fi
   no_of_zip_files=$(ls -lr ${kit_root}/*.zip | wc -l)
   if [ "$no_of_zip_files" == 1 ]
   then
-     unzip ${kit_root}/*.zip -d ${kit_root}
+     unzip -o ${kit_root}/*.zip -d ${kit_root}
   else
      echo "/opt/pega/kit folder should contain only kit zip"
      exit 1
+  fi
+
+  #delete the file if URI is provided
+  if $deleteFileAfterUnzip ; then
+    echo "Deleting downloaded kit zip file."
+    rm ${kit_root}/$buildname
   fi
 }
 
