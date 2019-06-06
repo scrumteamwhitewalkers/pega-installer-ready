@@ -1,3 +1,3 @@
 #!/bin/bash
-docker build -t slimimage .
-docker push slimimage
+docker build -t scrumteamwhitewalkers/slimimage:latest .
+docker push scrumteamwhitewalkers/slimimage:latest
