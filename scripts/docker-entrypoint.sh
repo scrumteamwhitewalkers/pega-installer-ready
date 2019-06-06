@@ -25,8 +25,6 @@ udb_conf="${config_root}/udb.conf"
 generate_config="${scripts_root}/generateConfig.sh"
 
 
-
-
 unzipKit(){
 deleteFileAfterUnzip=false
 #download if URI is provided
@@ -186,6 +184,7 @@ fi
 }
 
 generateConfig() {
+  
   generate_config_cmd="$generate_config $ACTION --resultFile result.properties"
 
   if [ "$ACTION" == 'pre-upgrade' ]; then
@@ -198,7 +197,6 @@ generateConfig() {
   source $scripts_root/result.properties
   # Initialize CODESET_VERSION to codeset version available in prdeploy.jar
   CODESET_VERSION=$prdeploy_codeset_version
-
 }
 
 initializeSchemas() {
@@ -249,6 +247,8 @@ mountOrDockerizeSetupdatabase
 
 # setupdatabase need to be mounted or dockerized for generateconfig to work
 generateConfig
+
+source /scripts/installer_utils.sh
 
 if [ "$ACTION" == 'install' ] || [ "$ACTION" == 'install-deploy' ]; then
   #------------------------INSTALL-------------------------------------
