@@ -47,8 +47,10 @@ fi
   if [ "$no_of_zip_files" == 1 ]
   then
      unzip -o ${kit_root}/*.zip -d ${kit_root}
+  elif [ "$no_of_zip_files" == 0 ]; then 
+     echo "No distribution kit is found under /opt/pega/kit"
   else
-     echo "/opt/pega/kit folder should contain only kit zip"
+     echo "/opt/pega/kit folder should contain only one zip file"
      exit 1
   fi
 

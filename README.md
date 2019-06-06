@@ -113,6 +113,7 @@ $ docker run -it -e ACTION="upgrade" -e UPGRADE_TYPE="in-place" pega-installer
 | ASSEMBLER | Run the Static Assembler if set to true |
 | BYPASS_TRUNCATE_UPDATESCACHE | Bypass automatically truncating PR_SYS_UPDATESCACHE |
 | JDBC_CUSTOM_CONNECTION | JDBC custom connection properties |
+| KIT_URL | URL for distribution kit |
 
 **Thread Level Parameters**
 
