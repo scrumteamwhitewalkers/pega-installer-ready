@@ -24,9 +24,7 @@ udb_conf="${config_root}/udb.conf"
 
 generate_config="${scripts_root}/generateConfig.sh"
 
-source /scripts/pega_install.sh
-source /scripts/pega_upgrade.sh
-source /scripts/installer_utils.sh
+
 
 
 unzipKit(){
@@ -45,13 +43,17 @@ if [ "$KIT_URL" != "" ]; then
 fi
 
 #check the no of zip files
-  no_of_zip_files=$(ls -lr ${kit_root}/*.zip | wc -l)
-  if [ "$no_of_zip_files" == 1 ]
+  no_of_zip_files=$(ls -lr ${kit_root}/*.zip 2> /dev/null| wc -l)
+  if [ "$no_of_zip_files" == 0 ]
   then
-     unzip -o ${kit_root}/*.zip -d ${kit_root}
+	echo "The distribution kit is neither mounted nor downloaded through Kit url '"$KIT_URL"'. Please provide a valid distribution image"
+	exit 1;
+  elif [ "$no_of_zip_files" -gt 1 ]
+  then
+	echo "/opt/pega/kit folder should contain only one distribution image in zip format"
+    exit 1     
   else
-     echo "/opt/pega/kit folder should contain only kit zip"
-     exit 1
+     unzip -o ${kit_root}/*.zip -d ${kit_root}
   fi
 
   #delete the file if URI is provided
@@ -209,21 +211,25 @@ initializeSchemas() {
 }
 
 isActionValid() {
- VALID_ACTIONS="install upgrade install-deploy upgrade-deploy pre-upgrade post-upgrade"
- if [ -n "`echo $VALID_ACTIONS | xargs -n1 echo | grep -e \"^$ACTION$\"`" ]; then
-  echo "Action selected is : " $ACTION;
+ VALID_ACTIONS="install, upgrade, install-deploy, upgrade-deploy, pre-upgrade, post-upgrade"
+ if [ -n "`echo $VALID_ACTIONS | xargs -d ","| xargs -n1| grep -e \"^$ACTION$\"`" ]; then
+  echo "Action selected is '"$ACTION"'";
  else
   echo "Invalid action '"$ACTION"' passed.";
   echo "Valid actions are : " $VALID_ACTIONS;
   exit 1;
  fi
 }
-
+echo "Checking valid action"
 # Check action validation
 isActionValid
 
 # unzip distribution kit
 unzipKit
+
+source /scripts/pega_install.sh
+source /scripts/pega_upgrade.sh
+source /scripts/installer_utils.sh
 
 # intialize the jar path and secrets before mounting any config file
 constructJarPath
