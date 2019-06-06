@@ -2,7 +2,7 @@
 
 source /opt/pega/kit/scripts/pre_post_upgrade_utils.sh
 
-do_pre_upgrade_actions() {
+do_post_upgrade_actions() {
 
   construct_prpc_utils_command
  
