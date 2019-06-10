@@ -102,6 +102,8 @@ ENV ZOS_PROPERTIES='' \
 
 ENV UPGRADE_TYPE='' \
     TARGET_RULES_SCHEMA='' \
+    TARGET_DATA_SCHEMA='' \
+    TARGET_CUSTOMERDATA_SCHEMA='' \
     TARGET_ZOS_PROPERTIES='' \
     MIGRATION_DB_LOAD_COMMIT_RATE='100' \
     UPDATE_EXISITING_APPLICATIONS='false' \
@@ -118,6 +120,16 @@ ENV MAX_IDLE='5' \
 
 # Code set version
 ENV CODESET_VERSION=''
+
+# FLAGS FOR MIGRATE STEP
+ENV MOVE_ADMIN_TABLE='false' \
+    CLONE_GENERATE_XML='false' \
+    CLONE_CREATE_DDL='false' \
+    CLONE_APPLY_DDL='false' \
+    BULKMOVER_UNLOAD_DB='false' \
+    BULKMOVER_LOAD_DB='false' \
+    RULES_OBJECTS_GENERATE='false' \
+    RULES_OBJECTS_APPLY='false'
 
 # Installing dockerize for generating config files using templates
 RUN curl -sL https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz | tar zxf - -C /bin/

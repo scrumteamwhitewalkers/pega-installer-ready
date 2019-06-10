@@ -136,15 +136,10 @@ else
 fi
 }
 
-# Mount provided setupdatabase.properties or dockerize from template
-mountOrDockerizeSetupdatabase() {
-if [ -e "$setupDatabase_properties" ]; then
-    echo "Loading setupDatabase.properties from ${setupDatabase_properties}...";
-    cp "$setupDatabase_properties" ${scripts_root}/
-else
-    echo "No setupDatabase was specified in ${setupDatabase_properties}.  Generating from templates."
-    /bin/dockerize -template ${config_root}/setupDatabase.properties.tmpl:${scripts_root}/setupDatabase.properties
-fi
+# Dockerize setupDatabase.properties from template
+dockerizeSetupdatabase() {
+  echo "Generating setupDatabase.properties from templates."
+  /bin/dockerize -template ${config_root}/setupDatabase.properties.tmpl:${scripts_root}/setupDatabase.properties
 }
 
 # dockerize prconfig.xml from template
@@ -157,6 +152,12 @@ dockerizePrconfig() {
 dockerizePrbootstrap() {
     echo "Generating prbootstrap.properties from templates."
     /bin/dockerize -template ${config_root}/prbootstrap.properties.tmpl:${scripts_root}/prbootstrap.properties
+}
+
+# dockerize migrateSystem.properties from template
+dockerizeMigrateSystemProperties() {
+    echo "Generating migrateSystem.properties from templates."
+    /bin/dockerize -template ${config_root}/migrateSystem.properties.tmpl:${scripts_root}/migrateSystem.properties
 }
 
 # Mount provided database conf files 
@@ -243,7 +244,7 @@ ACTUAL_CUSTOMERDATA_SCHEMA=$CUSTOMERDATA_SCHEMA;
 
 dockerizePrconfig
 dockerizePrbootstrap
-mountOrDockerizeSetupdatabase
+dockerizeSetupdatabase
 
 # setupdatabase need to be mounted or dockerized for generateconfig to work
 generateConfig

@@ -12,14 +12,6 @@ echo "           |___/              |_|    |___/                       "
 echo " ";
 }
 
-migrateCommand () {
-  if [ "$2" != "" ]; then
-    migrate="$migrate --$1 $2"
-  else
-    echo $1 "cannot be blank to perform migration"
-  fi
-}
-
 upgradeCommand() {
   if [ "$2" != "" ]; then
     upgrade="$upgrade --$1 $2"
@@ -35,50 +27,23 @@ in_place() {
 
 out_of_place() {
 
-	BULKMOVER_DIRECTORY="$scripts_root/upgrade/mover"
-	MIGRATE_TEMP_DIRECTORY="$scripts_root/upgrade/migrate"
 	BOOLEAN_TRUE="true"
 	BOOLEAN_FALSE="false"
-	# MIGRATE COMMANDS
-	migrateCommand sourceDriverClass $JDBC_CLASS     
-	migrateCommand sourceDriverJAR $DRIVER_JAR_PATH
-	migrateCommand sourceDbType $DB_TYPE
-	migrateCommand sourceDbURL $JDBC_URL
-	migrateCommand sourceDbUser $SECRET_DB_USERNAME       
-	migrateCommand sourceDbPassword $SECRET_DB_PASSWORD 
-	migrateCommand sourceRulesSchema $RULES_SCHEMA
-	migrateCommand sourceDataSchema $DATA_SCHEMA
-	migrateCommand sourceCustomerDataSchema $CUSTOMERDATA_SCHEMA
-	migrateCommand targetDriverClass $JDBC_CLASS
-	migrateCommand targetDriverJAR $DRIVER_JAR_PATH
-	migrateCommand targetDbType $DB_TYPE
-	migrateCommand targetDbURL $JDBC_URL
-	migrateCommand targetDbUser $SECRET_DB_USERNAME       
-	migrateCommand targetDbPassword $SECRET_DB_PASSWORD
-	migrateCommand dbLoadCommitRate $MIGRATION_DB_LOAD_COMMIT_RATE 
-	migrateCommand bulkMoverDirectory $BULKMOVER_DIRECTORY 
-	migrateCommand migrateTempDirectory $MIGRATE_TEMP_DIRECTORY
-	migrateCommand bypassUdfGeneration $BYPASS_UDF_GENERATION
-
-	# RULES_MIGRATION
-	rules_migrate="$migrate --sourceRulesSchema $RULES_SCHEMA --targetRulesSchema $TARGET_RULES_SCHEMA --targetDataSchema $TARGET_RULES_SCHEMA --targetCustomerDataSchema $TARGET_RULES_SCHEMA --moveAdminTable $BOOLEAN_TRUE --cloneGenerateXML $BOOLEAN_TRUE --cloneCreateDDL $BOOLEAN_TRUE --cloneApplyDDL $BOOLEAN_TRUE --bulkMoverUnloadDB $BOOLEAN_TRUE --bulkMoverLoadDB $BOOLEAN_TRUE --generateRuleObjects $BOOLEAN_FALSE --applyRuleObjects $BOOLEAN_FALSE --createSchemaIfAbsent $BOOLEAN_TRUE"
-
-	# RULES_UPGRADE
-	rules_upgrade="$upgrade --rulesSchema $TARGET_RULES_SCHEMA --dataSchema $TARGET_RULES_SCHEMA --customerDataSchema $TARGET_RULES_SCHEMA"
-
-	# GENERATE_SCHEMA_OBJECTS
-	generate_schema_objects="$migrate --targetRulesSchema $TARGET_RULES_SCHEMA --targetDataSchema $DATA_SCHEMA --targetCustomerDataSchema $CUSTOMERDATA_SCHEMA --moveAdminTable $BOOLEAN_FALSE --cloneGenerateXML $BOOLEAN_FALSE --cloneCreateDDL $BOOLEAN_FALSE --cloneApplyDDL $BOOLEAN_FALSE --bulkMoverUnloadDB $BOOLEAN_FALSE --bulkMoverLoadDB $BOOLEAN_FALSE --generateRuleObjects $BOOLEAN_TRUE --applyRuleObjects $BOOLEAN_TRUE"
-
-	# UPGRADE_DATA_ONLY
-	data_upgrade="$upgrade --rulesSchema $TARGET_RULES_SCHEMA --dataSchema $DATA_SCHEMA --customerDataSchema $CUSTOMERDATA_SCHEMA --dataOnly"
 	
+	# RULES_MIGRATION
+	rules_migrate="$migrate --createSchemaIfAbsent $BOOLEAN_TRUE"
+
 	cd $scripts_root
+	dockerizeBeforeRulesMigrate &&
 	runRulesMigrate &&
-	setBeforeRulesUpgrade &&
+	dockerizeBeforeRulesUpgrade &&
+	# RULES_UPGRADE
 	runRulesUpgrade &&
-	setBeforeGenerateSchemaObject &&
-	sh $generate_schema_objects &&
-	sh $data_upgrade
+	dockerizeBeforeGenerateSchemaObjects &&
+	# GENERATE_SCHEMA_OBJECTS
+	sh $migrate &&
+	# UPGRADE DATA ONLY
+	sh $upgrade
 }
 
 execute_upgrade() {
@@ -111,17 +76,33 @@ shopt -s nocasematch
 	if [ "$SKIP_RULES_UPGRADE" == 'true' ]; then
 	 echo "Skipping Rules Upgrade since SKIP_RULES_UPGRADE is set to true"
 	else
-	 sh $rules_upgrade
+	 sh $upgrade
 	fi
 shopt -u nocasematch
 }
 
-setBeforeRulesUpgrade() {
+dockerizeBeforeRulesUpgrade() {
 	export RULES_SCHEMA=$TARGET_RULES_SCHEMA;
 	export DATA_SCHEMA=$TARGET_RULES_SCHEMA;
 	export CUSTOMERDATA_SCHEMA=$TARGET_RULES_SCHEMA;
 	dockerizePrconfig
 	dockerizePrbootstrap
+	dockerizeSetupdatabase
+}
+
+dockerizeBeforeRulesMigrate() {
+	export TARGET_RULES_SCHEMA=$TARGET_RULES_SCHEMA;
+	export TARGET_DATA_SCHEMA=$TARGET_RULES_SCHEMA;
+	export TARGET_CUSTOMERDATA_SCHEMA=$TARGET_RULES_SCHEMA;
+	export MOVE_ADMIN_TABLE=$BOOLEAN_TRUE;
+	export CLONE_GENERATE_XML=$BOOLEAN_TRUE;
+	export CLONE_CREATE_DDL=$BOOLEAN_TRUE;
+	export CLONE_APPLY_DDL=$BOOLEAN_TRUE;
+	export BULKMOVER_UNLOAD_DB=$BOOLEAN_TRUE;
+	export BULKMOVER_LOAD_DB=$BOOLEAN_TRUE;
+	export RULES_OBJECTS_GENERATE=$BOOLEAN_FALSE;
+	export RULES_OBJECTS_APPLY=$BOOLEAN_FALSE;
+	dockerizeMigrateSystemProperties
 }
 
 setBeforeGenerateSchemaObject() {
@@ -130,4 +111,21 @@ setBeforeGenerateSchemaObject() {
 	export CUSTOMERDATA_SCHEMA=$ACTUAL_CUSTOMERDATA_SCHEMA;
 	dockerizePrconfig
 	dockerizePrbootstrap
+	dockerizeSetupdatabase
+}
+
+dockerizeBeforeGenerateSchemaObjects() {
+	setBeforeGenerateSchemaObject
+	export TARGET_RULES_SCHEMA=$TARGET_RULES_SCHEMA;
+	export TARGET_DATA_SCHEMA=$DATA_SCHEMA;
+	export TARGET_CUSTOMERDATA_SCHEMA=$CUSTOMERDATA_SCHEMA;
+	export MOVE_ADMIN_TABLE=$BOOLEAN_FALSE;
+	export CLONE_GENERATE_XML=$BOOLEAN_FALSE;
+	export CLONE_CREATE_DDL=$BOOLEAN_FALSE;
+	export CLONE_APPLY_DDL=$BOOLEAN_FALSE;
+	export BULKMOVER_UNLOAD_DB=$BOOLEAN_FALSE;
+	export BULKMOVER_LOAD_DB=$BOOLEAN_FALSE;
+	export RULES_OBJECTS_GENERATE=$BOOLEAN_TRUE;
+	export RULES_OBJECTS_APPLY=$BOOLEAN_TRUE;
+	dockerizeMigrateSystemProperties
 }
