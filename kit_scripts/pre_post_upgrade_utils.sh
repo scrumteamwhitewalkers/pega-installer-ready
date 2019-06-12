@@ -64,7 +64,7 @@ construct_dass_settings_json() {
 
 set_dass_settings() {
   # call prpcutils to set the dass
-  prpcUtils_set_upgrade_dass="$prpcUtils --dataSchema $DATA_SCHEMA --customerDataSchema $CUSTOMERDATA_SCHEMA --dassFilePath $upgrade_dass_settings_file"
+  prpcUtils_set_upgrade_dass="$prpcUtils --dataSchema $DATA_SCHEMA --customerDataSchema $CUSTOMERDATA_SCHEMA "
   cd $scripts_root
   echo $prpcUtils_set_upgrade_dass
   sh $prpcUtils_set_upgrade_dass
