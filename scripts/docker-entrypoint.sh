@@ -223,8 +223,7 @@ echo "Checking valid action"
 # Check action validation
 isActionValid
 
-
-if [ ! "$(ls -A /opt/pega/kit/scripts) && $(ls -A /opt/pega/kit/archives) && $(ls -A /opt/pega/kit/rules)" ]
+if [ -z "$(ls -A /opt/pega/kit/scripts)" -a -z "$(ls -A /opt/pega/kit/archives)" -a -z "$(ls -A /opt/pega/kit/rules)" ]
 then
     # unzip distribution kit
     unzipKit
