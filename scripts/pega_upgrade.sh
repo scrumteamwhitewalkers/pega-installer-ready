@@ -31,7 +31,7 @@ out_of_place() {
 	BOOLEAN_FALSE="false"
 	
 	# RULES_MIGRATION
-	rules_migrate="$migrate --createSchemaIfAbsent $BOOLEAN_TRUE"
+	rules_migrate="$migrate"
 
 	cd $scripts_root
 	dockerizeBeforeRulesMigrate &&

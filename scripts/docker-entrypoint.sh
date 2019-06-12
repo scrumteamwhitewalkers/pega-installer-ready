@@ -189,15 +189,17 @@ generateConfig() {
   generate_config_cmd="$generate_config $ACTION --resultFile result.properties"
 
   if [ "$ACTION" == 'pre-upgrade' ]; then
-	generate_config_cmd="$generate_config_cmd --rulesSchema $RULES_SCHEMA"  
+  generate_config_cmd="$generate_config_cmd --rulesSchema $RULES_SCHEMA"  
   fi
 
   sh $generate_config_cmd
   cat $scripts_root/result.properties
   
   source $scripts_root/result.properties
+
   # Initialize CODESET_VERSION to codeset version available in prdeploy.jar
   CODESET_VERSION=$prdeploy_codeset_version
+  ENGINE_CODESET_VERSION=$engine_codeset_version
 }
 
 initializeSchemas() {

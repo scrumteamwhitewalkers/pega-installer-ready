@@ -138,3 +138,7 @@ run.ruleset.cleanup={{ .Env.RUN_RULESET_CLEANUP }}
 pegarules.config=/opt/pega/kit/scripts/prconfig.xml
 prbootstrap.config=/opt/pega/kit/scripts/prbootstrap.properties
 prlogging.config=/opt/pega/kit/scripts/prlog4j2.xml
+
+
+# Create schema if absent flag - Only from Docker related deployments
+pega.schema.autocreate=true

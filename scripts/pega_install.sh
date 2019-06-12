@@ -3,13 +3,6 @@
 # Other installation parameters are picked up from setupDatabase.properties file.
 install="install.sh"
 
-installCommand ()
-{
- if [ "$2" != "" ]; then
-  install="$install --$1 $2"
- fi
-}
-
 execute_install() {
 echo " ____                    ___           _        _ _           ";
 echo "|  _ \ ___  __ _  __ _  |_ _|_ __  ___| |_ __ _| | | ___ _ __ ";
@@ -20,8 +13,6 @@ echo "           |___/                                              ";
 echo " "; 
 
 # Mapping Docker environment variables to install.sh command line arguments
-
-installCommand createSchemaIfAbsent true
 
 cd $scripts_root
 sh $install
