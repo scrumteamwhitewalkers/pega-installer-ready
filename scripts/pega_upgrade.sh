@@ -46,7 +46,7 @@ out_of_place() {
 	sh $upgrade
 }
 
-execute_upgrade() {
+executeInner() {
     upgradeBanner
 
     if [ "$ACTION" == 'upgrade' ] && [ "$UPGRADE_TYPE" == 'in-place' ]; then

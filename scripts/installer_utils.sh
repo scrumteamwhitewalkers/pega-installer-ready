@@ -1,5 +1,11 @@
 #!/bin/bash
 
+execute()
+{
+
+}
+
+
 do_upgrade_pre_post_actions() {
 
   if [ "$ACTION" == 'pre-upgrade' ]; then
@@ -13,3 +19,5 @@ do_upgrade_pre_post_actions() {
   fi
   
 }
+
+

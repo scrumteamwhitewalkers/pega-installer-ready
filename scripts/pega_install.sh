@@ -10,7 +10,7 @@ installCommand ()
  fi
 }
 
-execute_install() {
+executeInner() {
 echo " ____                    ___           _        _ _           ";
 echo "|  _ \ ___  __ _  __ _  |_ _|_ __  ___| |_ __ _| | | ___ _ __ ";
 echo "| |_) / _ \/ _  |/ _  |  | ||  _ \/ __| __/ _  | | |/ _ \  __|";
