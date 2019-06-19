@@ -44,9 +44,6 @@ execute()
 	initializeSchemas
 	dockerizeFiles
 
-	# setupdatabase need to be mounted or dockerized for generateconfig to work
-	generateConfig
-
 
 	if [ "$ACTION" == 'install' ] || [ "$ACTION" == 'install-deploy' ]; then
 	  #------------------------INSTALL-------------------------------------
