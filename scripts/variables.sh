@@ -1,6 +1,6 @@
 #!bin/bash
 
-set -e
+
 pega_root="/opt/pega"
 kit_root="${pega_root}/kit"
 scripts_root="${kit_root}/scripts"
@@ -24,5 +24,9 @@ db2zos_conf="${config_root}/db2zos.conf"
 udb_conf="${config_root}/udb.conf"
 
 generate_config="${scripts_root}/generateConfig.sh"
+
+install="install.sh"
+migrate="migrate.sh"
+upgrade="upgrade.sh"
 
 

@@ -1,23 +1,13 @@
-migrate="migrate.sh"
-upgrade="upgrade.sh"
 
 upgradeBanner()
 {
-echo " ____                    _   _                           _       "
-echo "|  _ \ ___  __ _  __ _  | | | |_ __   __ _ _ __ __ _  __| | ___  "
-echo "| |_) / _ \/ _  |/ _  | | | | |  _ \ / _  |  __/ _  |/ _  |/ _ \ "
-echo "|  __/  __/ (_| | (_| | | |_| | |_) | (_| | | | (_| | (_| |  __/ "
-echo "|_|   \___|\__  |\__ _|  \___/|  __/ \__  |_|  \__ _|\__ _|\___| "
-echo "           |___/              |_|    |___/                       "
-echo " ";
-}
-
-upgradeCommand() {
-  if [ "$2" != "" ]; then
-    upgrade="$upgrade --$1 $2"
-  else
-    echo $1 "cannot be blank to perform upgrade"
-  fi
+	echo " ____                    _   _                           _       "
+	echo "|  _ \ ___  __ _  __ _  | | | |_ __   __ _ _ __ __ _  __| | ___  "
+	echo "| |_) / _ \/ _  |/ _  | | | | |  _ \ / _  |  __/ _  |/ _  |/ _ \ "
+	echo "|  __/  __/ (_| | (_| | | |_| | |_) | (_| | | | (_| | (_| |  __/ "
+	echo "|_|   \___|\__  |\__ _|  \___/|  __/ \__  |_|  \__ _|\__ _|\___| "
+	echo "           |___/              |_|    |___/                       "
+	echo " ";
 }
 
 upgradeDataonly()
@@ -53,40 +43,24 @@ out_of_place() {
 	
 }
 
-executeInner() 
-{
-    upgradeBanner
-
-    if [ "$ACTION" == 'upgrade' ] && [ "$UPGRADE_TYPE" == 'in-place' ]; then
-    # IN_PLACE_UPGRADE	
-	    in_place
-    elif { [ "$ACTION" == 'upgrade' ] || [ "$ACTION" == 'upgrade-deploy' ] ;} && [ "$UPGRADE_TYPE" == 'out-of-place' ]; then
-    # OUT_OF_PLACE_UPGRADE
-	    out_of_place
-    else
-	 echo "Invalid action " $ACTION " or upgrade_type " $UPGRADE_TYPE " passed.";
-     exit 1;
-    fi
-}
-
 runRulesMigrate(){
-shopt -s nocasematch
+	shopt -s nocasematch
 	if [ "$SKIP_RULES_MIGRATE" == 'true' ]; then
-	 echo "Skipping Rules Migration since SKIP_RULES_MIGRATE is set to true"
+		echo "Skipping Rules Migration since SKIP_RULES_MIGRATE is set to true"
 	else
-	 sh $rules_migrate
+		sh $rules_migrate
 	fi
-shopt -u nocasematch
+	shopt -u nocasematch
 }
 
 runRulesUpgrade(){
-shopt -s nocasematch
+	shopt -s nocasematch
 	if [ "$SKIP_RULES_UPGRADE" == 'true' ]; then
-	 echo "Skipping Rules Upgrade since SKIP_RULES_UPGRADE is set to true"
+		echo "Skipping Rules Upgrade since SKIP_RULES_UPGRADE is set to true"
 	else
-	 sh $upgrade
+		sh $upgrade
 	fi
-shopt -u nocasematch
+	shopt -u nocasematch
 }
 
 dockerizeBeforeRulesUpgrade() {
@@ -136,4 +110,22 @@ dockerizeBeforeGenerateSchemaObjects() {
 	export RULES_OBJECTS_GENERATE=$BOOLEAN_TRUE;
 	export RULES_OBJECTS_APPLY=$BOOLEAN_TRUE;
 	dockerizeMigrateSystemProperties
+}
+
+#execution starts here
+
+executeInner() 
+{
+	upgradeBanner
+
+	if [ "$ACTION" == 'upgrade' ] && [ "$UPGRADE_TYPE" == 'in-place' ]; then
+	# IN_PLACE_UPGRADE	
+		in_place
+	elif { [ "$ACTION" == 'upgrade' ] || [ "$ACTION" == 'upgrade-deploy' ] ;} && [ "$UPGRADE_TYPE" == 'out-of-place' ]; then
+	# OUT_OF_PLACE_UPGRADE
+		out_of_place
+	else
+		echo "Invalid action " $ACTION " or upgrade_type " $UPGRADE_TYPE " passed.";
+		exit 1;
+	fi
 }

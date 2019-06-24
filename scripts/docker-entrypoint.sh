@@ -1,49 +1,22 @@
 #!/bin/bash
 
-#  Contains Commaon variables
+set -e
+
+#  Contains Common variables
 source /scripts/variables.sh
 
-#  Contains Common Funtion definitions
+#  Contains Common funtion definitions
 source /scripts/common_functions.sh
 
-mount_files()
-{
-
-	# mount these files before mounting/dockerizing prconfig, prbootstrap, setupdatabase
-	mount_log4j2
-	mount_dbconf
-}
-
-
-dockerizeFiles()
-{
-
-	dockerizePrconfig
-	dockerizePrbootstrap
-	dockerizeSetupdatabase
-
-}
 execute()
 {
-
-	# Check action validation
-	isActionValid
-
-
-        if [ -z "$(ls -A /opt/pega/kit/scripts)" -a -z "$(ls -A /opt/pega/kit/archives)" -a -z "$(ls -A /opt/pega/kit/rules)" ]
-        then	
-	    # unzip distribution kit
-	    unzipKit
-	fi
-
-
+	unzipKit
 	# intialize the jar path and secrets before mounting any config file
 	constructJarPath
 	readSecrets
 	mount_files
 	initializeSchemas
 	dockerizeFiles
-
 
 	if [ "$ACTION" == 'install' ] || [ "$ACTION" == 'install-deploy' ]; then
 	  #------------------------INSTALL-------------------------------------
@@ -58,8 +31,10 @@ execute()
 	  exit 1;
 	fi
 	
+	# Implementation for inner will be in one the included script based on $ACTION
 	executeInner
-
 }
+
+# Execution begins here.
 execute
 
