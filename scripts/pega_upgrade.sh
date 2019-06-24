@@ -20,6 +20,12 @@ upgradeCommand() {
   fi
 }
 
+upgradeDataonly()
+{
+     upgradeData="$upgrade --dataOnly true"
+     sh $upgradeData
+}
+
 in_place() {
 	cd $scripts_root
 	sh $upgrade
@@ -43,10 +49,12 @@ out_of_place() {
 	# GENERATE_SCHEMA_OBJECTS
 	sh $migrate &&
 	# UPGRADE DATA ONLY
-	sh $upgrade
+	upgradeDataonly
+	
 }
 
-executeInner() {
+executeInner() 
+{
     upgradeBanner
 
     if [ "$ACTION" == 'upgrade' ] && [ "$UPGRADE_TYPE" == 'in-place' ]; then

@@ -51,10 +51,8 @@ execute()
 	elif [ "$ACTION" == 'upgrade' ] || [ "$ACTION" == 'upgrade-deploy' ]; then
 	  #---------------------------UPGRADE----------------------------------
 	  source /scripts/pega_upgrade.sh
-	elif [ "$ACTION" == 'pre-upgrade' ]; then
-	  source /scripts/pega_pre_upgrade.sh
-	elif [ "$ACTION" == 'post-upgrade' ]; then
-	  source /scripts/pega_post_upgrade.sh
+	elif [ "$ACTION" == 'pre-upgrade' ] || [ "$ACTION" == 'post-upgrade' ]; then
+	  source /scripts/pega_pre_post_upgrade.sh	
 	else
 	  echo "Invalid action " $ACTION " passed.";
 	  exit 1;
